@@ -27,21 +27,35 @@ def forward_backward_prop(data, labels, params, dimensions):
     ofs = 0
     Dx, H, Dy = (dimensions[0], dimensions[1], dimensions[2])
 
-    W1 = np.reshape(params[ofs:ofs+ Dx * H], (Dx, H))
+    W1 = np.reshape(params[ofs:ofs + Dx * H], (Dx, H))      # Dx * H
     ofs += Dx * H
-    b1 = np.reshape(params[ofs:ofs + H], (1, H))
+    b1 = np.reshape(params[ofs:ofs + H], (1, H))            # 1 * H
     ofs += H
-    W2 = np.reshape(params[ofs:ofs + H * Dy], (H, Dy))
+    W2 = np.reshape(params[ofs:ofs + H * Dy], (H, Dy))      # H * Dy
     ofs += H * Dy
     b2 = np.reshape(params[ofs:ofs + Dy], (1, Dy))
 
-    ### YOUR CODE HERE: forward propagation
-    raise NotImplementedError
-    ### END YOUR CODE
+    x = data                                                # M * Dx
+    y = labels                                              # M * Dy
+    M = x.shape[0]
 
-    ### YOUR CODE HERE: backward propagation
-    raise NotImplementedError
-    ### END YOUR CODE
+    ### forward propagation
+    z1 = np.dot(x, W1) + b1
+    a1 = sigmoid(z1)
+
+    z2 = np.dot(a1, W2) + b2
+    y_hat = a2 = softmax(z2)
+
+    cost = -np.sum(np.log(a2[np.arange(M), np.argmax(y, axis=1)])) # Cross Entropy
+
+    ### backward propagation
+    gradz2 = y_hat - y
+    gradW2 = np.dot(a1.T, gradz2)
+    gradb2 = np.sum(gradz2, axis=0)
+    grada2 = np.dot(gradz2, W2.T)
+    gradz1 = sigmoid_grad(a1) * grada2
+    gradW1 = np.dot(x.T, gradz1)
+    gradb1 = np.sum(gradz1, axis=0)
 
     ### Stack gradients (do not modify)
     grad = np.concatenate((gradW1.flatten(), gradb1.flatten(),
@@ -80,7 +94,7 @@ def your_sanity_checks():
     """
     print "Running your sanity checks..."
     ### YOUR CODE HERE
-    raise NotImplementedError
+    # raise NotImplementedError
     ### END YOUR CODE
 
 
