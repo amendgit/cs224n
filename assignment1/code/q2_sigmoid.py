@@ -29,7 +29,7 @@ def sigmoid_grad(s):
     Return:
     ds -- Your computed gradient.
     """
-    ds = s - s ** 2
+    ds = s * (1 - s)
     return ds
 
 

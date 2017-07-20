@@ -1,3 +1,6 @@
 .DS_Store
 .idea/
-/**/*.pyc
+**/*.pyc
+assignment1/code/utils/datasets/**/*
+*.npy
+q4_dev_pred.txt
