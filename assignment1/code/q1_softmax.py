@@ -27,13 +27,11 @@ def softmax(x):
     x -- You are allowed to modify x in-place
     """
     orig_shape = x.shape
-
     ndim = x.ndim
-    max_x = np.max(x, axis=ndim-1, keepdims=True)
-    exp_x = np.exp(x - max_x)
-    sum_x = np.sum(exp_x, axis=ndim-1, keepdims=True)
-    x = np.exp(x - max_x) / sum_x
-
+    max = np.max(x, axis=ndim-1, keepdims=True)   # max value of array of each row. (M x 1)
+    exp = np.exp(x - max)                         # exp of each element. (M x N)
+    sum = np.sum(exp, axis=ndim-1, keepdims=True) # sum of each row. (M x 1)
+    x = exp / sum                                 # softmax. (M x N)
     assert x.shape == orig_shape
     return x
 
