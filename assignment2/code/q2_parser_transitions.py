@@ -19,9 +19,9 @@ class PartialParse(object):
         """
         # The sentence being parsed is kept for bookkeeping purposes. Do not use it in your code.
         self.sentence = sentence
-
-        ### YOUR CODE HERE
-        ### END YOUR CODE
+        self.stack = ['ROOT']
+        self.buffer = self.sentence[:]
+        self.dependencies = []
 
     def parse_step(self, transition):
         """Performs a single parse step by applying the given transition to this partial parse
@@ -30,8 +30,16 @@ class PartialParse(object):
             transition: A string that equals "S", "LA", or "RA" representing the shift, left-arc,
                         and right-arc transitions.
         """
-        ### YOUR CODE HERE
-        ### END YOUR CODE
+        if transition == 'S':
+            self.stack.append(self.buffer[0])
+            del self.buffer[0]
+        elif transition == 'LA':
+            self.dependencies.append((self.stack[-1], self.stack[-2]))
+            del self.stack[-2]
+        elif transition == 'RA':
+            self.dependencies.append((self.stack[-2], self.stack[-1]))
+            del self.stack[-1]
+
 
     def parse(self, transitions):
         """Applies the provided transitions to this PartialParse
@@ -153,4 +161,4 @@ def test_minibatch_parse():
 if __name__ == '__main__':
     test_parse_step()
     test_parse()
-    test_minibatch_parse()
+    # test_minibatch_parse()
