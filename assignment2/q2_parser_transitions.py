@@ -23,6 +23,7 @@ class PartialParse(object):
         self.buffer = self.sentence[:]
         self.dependencies = []
 
+
     def parse_step(self, transition):
         """Performs a single parse step by applying the given transition to this partial parse
 
@@ -71,11 +72,16 @@ def minibatch_parse(sentences, model, batch_size):
                       Ordering should be the same as in sentences (i.e., dependencies[i] should
                       contain the parse for sentences[i]).
     """
-
-    ### YOUR CODE HERE
-    ### END YOUR CODE
-
-    return dependencies
+    partial_parses = [PartialParse(sentence) for sentence in sentences]
+    unfinished_parses = partial_parses[:]
+    while len(unfinished_parses) > 0:
+        batch_parses = unfinished_parses[0:batch_size]
+        transitions = model.predict(batch_parses)
+        for i, parse in enumerate(batch_parses):
+            parse.parse_step(transitions[i])
+            if len(parse.stack) <= 1 or len(parse.stack) <= 0:
+                unfinished_parses.remove(parse)
+    return [parse.dependencies for parse in partial_parses]
 
 
 def test_step(name, transition, stack, buf, deps,
@@ -161,4 +167,4 @@ def test_minibatch_parse():
 if __name__ == '__main__':
     test_parse_step()
     test_parse()
-    # test_minibatch_parse()
+    test_minibatch_parse()
